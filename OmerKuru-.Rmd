@@ -1,0 +1,192 @@
+---
+title: "Untitled"
+author: "Ömer Kuru"
+date: '2023-02-03'
+output: html_document
+---
+#Proje Icin Gerekli Kutuphaneler
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+
+#CSV dosyasi Olan Veriyi R'a Aktarma
+```{r}
+
+getwd()
+ford<-read.csv("ford.csv")
+View(ford)
+
+```
+#Verini Ozeti
+```{r}
+summary(ford)
+
+```
+#Verinin Ilk 10 Satırı
+```{r}
+head(ford,n = 10)
+```
+
+#Araba Modellerine Gore Frekans
+```{r}
+frq<-ford%>%
+  group_by(model)%>%
+  summarize(freq=n())%>%
+  View("Model Sayilari")
+
+```
+
+#Duz Vites Olan Arabaların Frekansı
+```{r}
+manu<-ford%>%
+  group_by(model,transmission)%>%
+  filter(transmission=="Manual")%>%
+  summarize("Frekans"=n())%>%
+  View("Vites")
+```
+
+#Vites Türüne Göre Frekans
+```{r}
+frq_trns<-ford%>%
+  group_by(transmission)%>%
+  summarize(freq=n())%>%
+  View("Vites Türleri")
+
+```
+
+#Motor Gucune Gore Frekans
+```{r}
+frq_size<-ford%>%
+  group_by(engineSize)%>%
+  summarize(freq=n())%>%
+  View("Motor Gucu")
+
+```
+
+#Yakit Tipine Gore Frekans
+```{r}
+gas<-ford%>%
+  group_by(fuelType)%>%
+  summarize("Yakıt Turu"=n())%>%
+  View("Yakit Turu")
+```
+
+#Elektrikli Olan Modeller ve Üretim Yılları
+```{r}
+elec<-ford%>%
+  select(model,year,fuelType)%>%
+  filter(fuelType=="Electric")%>%
+  View("Elektrikli Arabalar")
+
+```
+
+#Petrol Kullanan Modeller ve Üretim Yılları
+```{r}
+petrol<-ford%>%
+  select(model,year,fuelType)%>%
+  filter(fuelType=="Petrol")%>%
+  View("Petrol Kullanan Arabalar")
+```
+
+#Modellerin Ortalama Fiyati
+```{r}
+ort<-ford%>%
+  group_by(model)%>%
+  summarize("Modele Gore Fiyat Ortalamasi"=mean(price))%>%
+  View("Ort Fiyat")
+```
+
+#10k'dan Ucuz Olan Arabalar
+```{r}
+
+cheap<-ford%>%
+  select(model,price)%>%
+  filter(price<10000)%>%
+  arrange(price)%>%
+  View("Ucuz Araba")
+```
+
+#Araba Modellerinden Alinan Ortalama Vergi
+```{r}
+tax_m<-ford%>%
+  group_by(model)%>%
+  summarize("Alinan Ortalama Vergi"=mean(tax))%>%
+  View("Ortalama vergi")
+```
+
+#Km Basina Yakıt Tuketimi
+```{r}
+
+mpg<-ford%>%
+  select(model,mpg)%>%
+  arrange(mpg)%>%
+  View("Tuketim")
+
+```
+
+#Ford Marka Araba Alanlar Ortalama Kac km Araba Kullaniyor
+```{r}
+ma<-ford%>%
+  group_by(model)%>%
+  summarize("Ortalama kullanÄ±lan km"=mean(mileage))%>%
+  View("Ortalama Mil")
+```
+
+#100k'dan Fazla Mile SAhip Olan Arabalar
+```{r}
+old<-ford%>%
+  select(model,year,mileage)%>%
+  filter(mileage>100000)%>%
+  arrange(mileage)%>%
+  View()
+```
+
+#2010 Sonrası Araba Modellerinin Yılı ve Mili
+```{r}
+new<-ford%>%
+  select(model,year,mileage)%>%
+  filter(year>2010)%>%
+  arrange(year)%>%
+  View("2010 sonra")
+```
+
+#2010 Sonrası Araba Modellerinin Yılı ve Mili
+```{r}
+oldi<-ford%>%
+  select(model,year,mileage)%>%
+  filter(year<2010)%>%
+  arrange(year)%>%
+  View("2010 once")
+```
+
+
+#Vites Cesidine Gore Araba Uretim Tarihleri Dagılım Tablosu
+```{r}
+
+ggplot(ford,
+       mapping = aes(x=transmission,y = year),
+       )+
+  labs(title="Vites Cesidine Gore Araba Uretim Tarihleri")+
+  geom_point()
+```
+
+#Vites Turune Gore Araba Modelleri Dagılım Tablosu
+```{r}
+ggplot(ford,
+       mapping = aes(x=transmission,y = model,
+                     ),
+       )+
+  labs(title="Vites Turune Gore Araba Modelleri")+
+  geom_point()
+```
+#Ortalama Yakit Tuketimi Histogram Grafigi
+```{r}
+ggplot(ford,
+       mapping=aes(x=mpg))+
+  geom_histogram(bins = 10)
+
+```
+
+
+
